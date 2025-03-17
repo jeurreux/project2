@@ -217,7 +217,7 @@ public class flappymain extends ApplicationAdapter {
 
         }
 
-        batch.end();
+        batch.end()
 
 
 
