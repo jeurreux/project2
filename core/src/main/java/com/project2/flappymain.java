@@ -24,18 +24,18 @@ public class flappymain extends ApplicationAdapter {
     Texture[] rockets;
     int flyState = 0;
     float rocketY = 0;
-    float velocity = 0;
+    double velocity = 0;
     Circle rocketCircle;
     int score = 0;
     int scoringTube = 0;
     BitmapFont font;
 
     int gameState = 0;
-    float gravity = 2;
+    double gravity = 1.5;
 
     Texture asteroids;
     Texture satellites;
-    float gap = 400;
+    float gap = 700;
     float maxdebrisOffset;
     Random randomGenerator;
     float debrisVelocity = 4;
@@ -154,7 +154,7 @@ public class flappymain extends ApplicationAdapter {
 
 
 
-            if (rocketY > 0) {
+            if (rocketY > 0 && rocketY < 2500) {
 
                 velocity = velocity + gravity;
                 rocketY -= velocity;
@@ -213,6 +213,7 @@ public class flappymain extends ApplicationAdapter {
 
                 gameState = 2;
 
+                break;
             }
 
         }
