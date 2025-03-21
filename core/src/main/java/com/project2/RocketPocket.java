@@ -1,6 +1,6 @@
 package com.project2;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Rectangle;
 import java.util.Random;
 
 
-public class RocketPocket extends ApplicationAdapter {
+public class RocketPocket extends Game {
     SpriteBatch batch;
     Texture background;
     Texture gameover;
@@ -47,6 +47,8 @@ public class RocketPocket extends ApplicationAdapter {
 
     @Override
     public void create () {
+        setScreen(new MainMenuScreen(this)); // start with menu
+
         batch = new SpriteBatch();
         background = new Texture("background.png");
         gameover = new Texture("gameover.png");
