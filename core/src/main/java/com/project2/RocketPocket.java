@@ -3,22 +3,19 @@ package com.project2;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.util.Random;
 
 
-public class flappymain extends ApplicationAdapter {
+public class RocketPocket extends ApplicationAdapter {
     SpriteBatch batch;
     Texture background;
-
     Texture gameover;
 
     Texture[] rockets;
@@ -66,9 +63,9 @@ public class flappymain extends ApplicationAdapter {
 
         asteroids = new Texture("asteroids.png");
         satellites = new Texture("satellites.png");
-        maxdebrisOffset = Gdx.graphics.getHeight() / 2 - gap / 2 - 100;
+        maxdebrisOffset = (float)Gdx.graphics.getHeight() / 2 - gap / 2 - 100;
         randomGenerator = new Random();
-        distanceBetweendebris = Gdx.graphics.getWidth() * 3 / 4;
+        distanceBetweendebris = (float)Gdx.graphics.getWidth() * 3 / 4;
         asteroidsRectangles = new Rectangle[numberOfdebris];
         satellitesRectangles = new Rectangle[numberOfdebris];
 
@@ -83,13 +80,13 @@ public class flappymain extends ApplicationAdapter {
 
     public void startGame() {
 
-        rocketY = Gdx.graphics.getHeight() / 2 - rockets[0].getHeight() / 2;
+        rocketY = (float)Gdx.graphics.getHeight() / 2 - (float)rockets[0].getHeight() / 2;
 
         for (int i = 0; i < numberOfdebris; i++) {
 
             debrisOffset[i] = (randomGenerator.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 200);
 
-            debrisX[i] = Gdx.graphics.getWidth() / 2 - asteroids.getWidth() / 2 + Gdx.graphics.getWidth() + i * distanceBetweendebris;
+            debrisX[i] = (float)Gdx.graphics.getWidth() / 2 - (float)asteroids.getWidth() / 2 + Gdx.graphics.getWidth() + i * distanceBetweendebris;
 
             asteroidsRectangles[i] = new Rectangle();
             satellitesRectangles[i] = new Rectangle();
@@ -106,7 +103,7 @@ public class flappymain extends ApplicationAdapter {
 
         if (gameState == 1) {
 
-            if (debrisX[scoringTube] < Gdx.graphics.getWidth() / 2) {
+            if (debrisX[scoringTube] < (float)Gdx.graphics.getWidth() / 2) {
 
                 score++;
 
@@ -145,11 +142,11 @@ public class flappymain extends ApplicationAdapter {
 
                 }
 
-                batch.draw(asteroids, debrisX[i], Gdx.graphics.getHeight() / 2 + gap / 2 + debrisOffset[i]);
-                batch.draw(satellites, debrisX[i], Gdx.graphics.getHeight() / 2 - gap / 2 - satellites.getHeight() + debrisOffset[i]);
+                batch.draw(asteroids, debrisX[i], (float)Gdx.graphics.getHeight() / 2 + gap / 2 + debrisOffset[i]);
+                batch.draw(satellites, debrisX[i], (float)Gdx.graphics.getHeight() / 2 - gap / 2 - satellites.getHeight() + debrisOffset[i]);
 
-                asteroidsRectangles[i] = new Rectangle(debrisX[i], Gdx.graphics.getHeight() / 2 + gap / 2 + debrisOffset[i], asteroids.getWidth(), asteroids.getHeight());
-                satellitesRectangles[i] = new Rectangle(debrisX[i], Gdx.graphics.getHeight() / 2 - gap / 2 - satellites.getHeight() + debrisOffset[i], satellites.getWidth(), satellites.getHeight());
+                asteroidsRectangles[i] = new Rectangle(debrisX[i], (float)Gdx.graphics.getHeight() / 2 + gap / 2 + debrisOffset[i], asteroids.getWidth(), asteroids.getHeight());
+                satellitesRectangles[i] = new Rectangle(debrisX[i], (float)Gdx.graphics.getHeight() / 2 - gap / 2 - satellites.getHeight() + debrisOffset[i], satellites.getWidth(), satellites.getHeight());
             }
 
 
@@ -176,7 +173,7 @@ public class flappymain extends ApplicationAdapter {
 
         } else if (gameState == 2) {
 
-            batch.draw(gameover, Gdx.graphics.getWidth() / 2 - gameover.getWidth() / 2, Gdx.graphics.getHeight() / 2 - gameover.getHeight() / 2);
+            batch.draw(gameover, (float)Gdx.graphics.getWidth() / 2 - (float)gameover.getWidth() / 2, (float)Gdx.graphics.getHeight() / 2 - (float)gameover.getHeight() / 2);
 
             if (Gdx.input.justTouched()) {
 
@@ -199,11 +196,11 @@ public class flappymain extends ApplicationAdapter {
 
 
 
-        batch.draw(rockets[flyState], Gdx.graphics.getWidth() / 2 - rockets[flyState].getWidth() / 2, rocketY);
+        batch.draw(rockets[flyState], (float)Gdx.graphics.getWidth() / 2 - (float)rockets[flyState].getWidth() / 2, rocketY);
 
         font.draw(batch, String.valueOf(score), 100, 200);
 
-        rocketCircle.set(Gdx.graphics.getWidth() / 2, rocketY + rockets[flyState].getHeight() / 2, rockets[flyState].getWidth() / 2);
+        rocketCircle.set((float)Gdx.graphics.getWidth() / 2, rocketY + (float)rockets[flyState].getHeight() / 2, (float)rockets[flyState].getWidth() / 2);
 
 
         for (int i = 0; i < numberOfdebris; i++) {
