@@ -13,9 +13,6 @@ import com.badlogic.gdx.math.Rectangle;
 
 import java.util.Random;
 
-
-
-
 public class RocketPocket extends Game {
     SpriteBatch batch;
     Texture background;
@@ -49,7 +46,6 @@ public class RocketPocket extends Game {
     Rectangle[] satellitesRectangles;
 
 
-
     @Override
     public void create () {
         setScreen(new MainMenuScreen(this)); // start with menu
@@ -81,11 +77,6 @@ public class RocketPocket extends Game {
 
 
         startGame();
-
-
-
-
-
     }
 
     public void startGame() {

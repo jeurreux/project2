@@ -17,9 +17,9 @@ public class GameScreen implements Screen {
     public GameScreen(Game game) {
         this.game = game;
         batch = new SpriteBatch();
-        backgroundTexture = new Texture("background.png"); // Using same background
-        rocketPocket = new RocketPocket(); // Initialize game logic
-        rocketPocket.create(); // Call create method from RocketPocket
+        backgroundTexture = new Texture("background.png");
+        rocketPocket = new RocketPocket(); // init game logic
+        rocketPocket.create(); // call create method from RocketPocket
     }
 
     @Override
@@ -32,7 +32,7 @@ public class GameScreen implements Screen {
         batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
 
-        rocketPocket.render(); // Render RocketPocket game elements
+        rocketPocket.render(); // render RocketPocket elements
     }
 
     @Override

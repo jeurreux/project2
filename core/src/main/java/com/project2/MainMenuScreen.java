@@ -5,14 +5,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-
+// smh so many imports
 public class MainMenuScreen implements Screen {
 
     private Game game;
@@ -32,11 +31,11 @@ public class MainMenuScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        backgroundTexture = new Texture("background.png"); // Same background as other pages
+        backgroundTexture = new Texture("background.png");
         titleTexture = new Texture("title.png");
         startButtonTexture = new Texture("play-button.png");
         leaderboardButtonTexture = new Texture("leaderboards-button.png");
-        rocketTexture = new Texture("rocket-up.png"); // Load rocket texture
+        rocketTexture = new Texture("rocket-up.png"); // load rocket texture
 
         Table rootTable = new Table();
         rootTable.setFillParent(true);
@@ -47,6 +46,7 @@ public class MainMenuScreen implements Screen {
 
         // DO NOT TOUCH VALUES I SPENT 15 MINUTES ADJUUSTING THE VALUES TO MAKE IT PERFECT
         // Nah - Haldon
+        // values were touched </3 jk
         Image titleImage = new Image(titleTexture);
         rootTable.add(titleImage)
             .width(900)
@@ -71,6 +71,7 @@ public class MainMenuScreen implements Screen {
                 game.setScreen(new GameScreen(game));
             }
         });
+        // literally just space with oddly specific values plz dont touch
         rootTable.add(startButton).width(375).height(275).padTop(50).row();
 
         Image leaderboardButton = new Image(leaderboardButtonTexture);
@@ -80,6 +81,7 @@ public class MainMenuScreen implements Screen {
                 game.setScreen(new LeaderboardScreen(game));
             }
         });
+        // space again :/
         rootTable.add(leaderboardButton).width(600).height(200).padTop(20);
 
         stage.addActor(rootTable);

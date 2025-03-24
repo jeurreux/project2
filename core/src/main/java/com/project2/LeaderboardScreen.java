@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import java.util.List;
 import java.util.ArrayList;
+// smh so many imports
 
 public class LeaderboardScreen implements Screen {
 
@@ -36,8 +37,9 @@ public class LeaderboardScreen implements Screen {
 
         // Load images
         backgroundTexture = new Texture("background.png");
-        leaderboardTitleTexture = new Texture("leaderboard_title.png");
-        backButtonTexture = new Texture("back_button.png");
+        Texture leaderboardTitleTexture;
+        leaderboardTitleTexture = new Texture(Gdx.files.internal("leaderboards.png"));
+        backButtonTexture = new Texture("arrow-button.png");
 
         Table table = new Table();
         table.setFillParent(true);
@@ -47,11 +49,11 @@ public class LeaderboardScreen implements Screen {
         stage.addActor(backgroundImage);
         stage.addActor(table);
 
-        // Leaderboard title
+        // leaderboard title
         Image leaderboardTitle = new Image(leaderboardTitleTexture);
         table.add(leaderboardTitle).padBottom(50).row();
 
-        // Dummy high scores
+        // dummy high scores until player comes through
         List<String> scores = new ArrayList<>();
         scores.add("1. Player1 - 5000");
         scores.add("2. Player2 - 4000");
@@ -64,7 +66,7 @@ public class LeaderboardScreen implements Screen {
             table.add(scoreLabel).padBottom(10).row();
         }
 
-        // Back button
+        // back or quit button
         Image backButton = new Image(backButtonTexture);
         backButton.addListener(new ClickListener() {
             @Override
