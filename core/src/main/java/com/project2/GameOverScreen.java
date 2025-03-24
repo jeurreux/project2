@@ -12,13 +12,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 
-public class MainMenuScreen implements Screen {
+public class GameOverScreen implements Screen {
     private Game game;
     private Stage stage;
-    private Texture background, title, playButton, leaderboardButton, rocket;
+    private Texture background, gameover, backButton;
+    private int score;
 
-    public MainMenuScreen(Game game) {
+    public GameOverScreen(Game game, int score) {
         this.game = game;
+        this.score = score;
     }
 
     @Override
@@ -26,12 +28,9 @@ public class MainMenuScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        // Load textures
         background = new Texture("background.png");
-        title = new Texture("title.png");
-        playButton = new Texture("play-button.png");
-        leaderboardButton = new Texture("leaderboards-button.png");
-        rocket = new Texture("rocket-up.png");
+        gameover = new Texture("gameover.png");
+        backButton = new Texture("quit-button.png");
 
         Table table = new Table();
         table.setFillParent(true);
@@ -41,33 +40,18 @@ public class MainMenuScreen implements Screen {
         bgImage.setFillParent(true);
         stage.addActor(bgImage);
 
-        // Title
-        table.add(new Image(title)).width(900).height(300).padBottom(0).row();
+        // Game Over Image
+        table.add(new Image(gameover)).padBottom(100).row();
 
-        // Rocket
-        table.add(new Image(rocket))
-            .width(135).height(100)
-            .padTop(565).padBottom(320).row();
-
-        // Play Button
-        Image playBtn = new Image(playButton);
-        playBtn.addListener(new ClickListener() {
+        // Back Button
+        Image backBtn = new Image(backButton);
+        backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new GameScreen(game));
+                game.setScreen(new MainMenuScreen(game));
             }
         });
-        table.add(playBtn).width(375).height(275).padTop(50).row();
-
-        // Leaderboard Button
-        Image leaderboardBtn = new Image(leaderboardButton);
-        leaderboardBtn.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new LeaderboardScreen(game));
-            }
-        });
-        table.add(leaderboardBtn).width(600).height(200).padTop(20);
+        table.add(backBtn).width(200).height(200);
 
         stage.addActor(table);
     }
@@ -83,10 +67,8 @@ public class MainMenuScreen implements Screen {
     public void dispose() {
         stage.dispose();
         background.dispose();
-        title.dispose();
-        playButton.dispose();
-        leaderboardButton.dispose();
-        rocket.dispose();
+        gameover.dispose();
+        backButton.dispose();
     }
 
     // Other required Screen methods...

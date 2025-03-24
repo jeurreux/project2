@@ -10,94 +10,184 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
-
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import java.util.Random;
 
-public class RocketPocket extends Game {
-    SpriteBatch batch;
-    Texture background;
-    Texture gameover;
-    Preferences prefs;
-    private int highScores[] = new int[3];  // initilizing highscore variable
+public class RocketPocket {
+    private Game game;
+    private SpriteBatch batch;
+    private Texture background, gameover, backButton;
+    private Preferences prefs;
+    private int[] highScores = new int[3];
+    private Texture[] rockets;
+    private int flyState = 0;
+    private float rocketY = 0;
+    private double velocity = 0;
+    private Circle rocketCircle;
+    private int score = 0;
+    private int scoringTube = 0;
+    private BitmapFont font;
+    private int gameState = 0;
+    private double gravity = 1.5;
+    private Texture asteroids, satellites;
+    private float gap = 700;
+    private float maxDebrisOffset;
+    private Random random;
+    private float debrisVelocity = 4;
+    private int numberOfDebris = 4;
+    private float[] debrisX = new float[numberOfDebris];
+    private float[] debrisOffset = new float[numberOfDebris];
+    private float distanceBetweenDebris;
+    private Rectangle[] asteroidsRectangles;
+    private Rectangle[] satellitesRectangles;
+    private Stage gameOverStage;
 
-    Texture[] rockets;
-    int flyState = 0;
-    float rocketY = 0;
-    double velocity = 0;
-    Circle rocketCircle;
-    int score = 0;
-    int scoringTube = 0;
-    BitmapFont font;
-
-    int gameState = 0;
-    double gravity = 1.5;
-
-    Texture asteroids;
-    Texture satellites;
-    float gap = 700;
-    float maxdebrisOffset;
-    Random randomGenerator;
-    float debrisVelocity = 4;
-    int numberOfdebris = 4;
-    float[] debrisX = new float[numberOfdebris];
-    float[] debrisOffset = new float[numberOfdebris];
-    float distanceBetweendebris;
-    Rectangle[] asteroidsRectangles;
-    Rectangle[] satellitesRectangles;
-
-
-
-    @Override
-    public void create () {
-        setScreen(new MainMenuScreen(this)); // start with menu
-
+    public RocketPocket(Game game) {
+        this.game = game;
         batch = new SpriteBatch();
         background = new Texture("background.png");
         gameover = new Texture("gameover.png");
-        //shapeRenderer = new ShapeRenderer();
+        backButton = new Texture("quit-button.png");
         rocketCircle = new Circle();
         font = new BitmapFont();
         font.setColor(Color.WHITE);
         font.getData().setScale(10);
 
-        prefs = Gdx.app.getPreferences("FlappyPreferences");
+        prefs = Gdx.app.getPreferences("RocketPocketPrefs");
         loadHighScores();
 
         rockets = new Texture[2];
         rockets[0] = new Texture("rocket-up.png");
         rockets[1] = new Texture("rocket-down.png");
 
-
         asteroids = new Texture("asteroids.png");
         satellites = new Texture("satellites.png");
-        maxdebrisOffset = (float)Gdx.graphics.getHeight() / 2 - gap / 2 - 100;
-        randomGenerator = new Random();
-        distanceBetweendebris = (float)Gdx.graphics.getWidth() * 3 / 4;
-        asteroidsRectangles = new Rectangle[numberOfdebris];
-        satellitesRectangles = new Rectangle[numberOfdebris];
+        maxDebrisOffset = Gdx.graphics.getHeight()/2 - gap/2 - 100;
+        random = new Random();
+        distanceBetweenDebris = Gdx.graphics.getWidth() * 3/4;
+        asteroidsRectangles = new Rectangle[numberOfDebris];
+        satellitesRectangles = new Rectangle[numberOfDebris];
 
+        gameOverStage = new Stage(new ScreenViewport());
 
         startGame();
     }
 
-    public void startGame() {
-
-        rocketY = (float)Gdx.graphics.getHeight() / 2 - (float)rockets[0].getHeight() / 2;
-
-        for (int i = 0; i < numberOfdebris; i++) {
-
-            debrisOffset[i] = (randomGenerator.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 200);
-
-            debrisX[i] = (float)Gdx.graphics.getWidth() / 2 - (float)asteroids.getWidth() / 2 + Gdx.graphics.getWidth() + i * distanceBetweendebris;
-
+    private void startGame() {
+        rocketY = Gdx.graphics.getHeight()/2 - rockets[0].getHeight()/2;
+        for (int i = 0; i < numberOfDebris; i++) {
+            debrisOffset[i] = (random.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 200);
+            debrisX[i] = Gdx.graphics.getWidth()/2 - asteroids.getWidth()/2 + Gdx.graphics.getWidth() + i * distanceBetweenDebris;
             asteroidsRectangles[i] = new Rectangle();
             satellitesRectangles[i] = new Rectangle();
-
         }
-
     }
 
-    //load highscores data from file
+    public void render() {
+        batch.begin();
+        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        if (gameState == 1) { // Game running
+            // Game logic...
+            if (debrisX[scoringTube] < Gdx.graphics.getWidth()/2) {
+                score++;
+                if (scoringTube < numberOfDebris - 1) {
+                    scoringTube++;
+                } else {
+                    scoringTube = 0;
+                }
+            }
+
+            if (Gdx.input.justTouched()) {
+                velocity = -30;
+            }
+
+            for (int i = 0; i < numberOfDebris; i++) {
+                if (debrisX[i] < -asteroids.getWidth()) {
+                    debrisX[i] += numberOfDebris * distanceBetweenDebris;
+                    debrisOffset[i] = (random.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 200);
+                } else {
+                    debrisX[i] -= debrisVelocity;
+                }
+
+                batch.draw(asteroids, debrisX[i], Gdx.graphics.getHeight()/2 + gap/2 + debrisOffset[i]);
+                batch.draw(satellites, debrisX[i], Gdx.graphics.getHeight()/2 - gap/2 - satellites.getHeight() + debrisOffset[i]);
+
+                asteroidsRectangles[i].set(debrisX[i], Gdx.graphics.getHeight()/2 + gap/2 + debrisOffset[i],
+                    asteroids.getWidth(), asteroids.getHeight());
+                satellitesRectangles[i].set(debrisX[i], Gdx.graphics.getHeight()/2 - gap/2 - satellites.getHeight() + debrisOffset[i],
+                    satellites.getWidth(), satellites.getHeight());
+            }
+
+            if (rocketY > 0 && rocketY < Gdx.graphics.getHeight()) {
+                velocity += gravity;
+                rocketY -= velocity;
+            } else {
+                gameState = 2; // Game over
+            }
+
+        } else if (gameState == 0) { // Ready screen
+            if (Gdx.input.justTouched()) {
+                gameState = 1;
+            }
+        } else if (gameState == 2) { // Game over
+            batch.draw(gameover, Gdx.graphics.getWidth()/2 - gameover.getWidth()/2,
+                Gdx.graphics.getHeight()/2 - gameover.getHeight()/2);
+            batch.end();
+
+            // Show game over UI
+            if (gameOverStage.getActors().size == 0) {
+                setupGameOverUI();
+            }
+
+            gameOverStage.act();
+            gameOverStage.draw();
+            return;
+        }
+
+        flyState = (flyState == 0) ? 1 : 0;
+        batch.draw(rockets[flyState], Gdx.graphics.getWidth()/2 - rockets[flyState].getWidth()/2, rocketY);
+        font.draw(batch, String.valueOf(score), 100, 200);
+
+        rocketCircle.set(Gdx.graphics.getWidth()/2, rocketY + rockets[flyState].getHeight()/2,
+            rockets[flyState].getWidth()/2);
+
+        for (int i = 0; i < numberOfDebris; i++) {
+            if (Intersector.overlaps(rocketCircle, asteroidsRectangles[i]) ||
+                Intersector.overlaps(rocketCircle, satellitesRectangles[i])) {
+                gameState = 2;
+                break;
+            }
+        }
+
+        batch.end();
+    }
+
+    private void setupGameOverUI() {
+        Gdx.input.setInputProcessor(gameOverStage);
+        addScoreToLeaderboard(score);
+
+        Table table = new Table();
+        table.setFillParent(true);
+        table.bottom().padBottom(100);
+
+        Image backBtn = new Image(backButton);
+        backBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new MainMenuScreen(game));
+            }
+        });
+
+        table.add(backBtn).width(200).height(200);
+        gameOverStage.addActor(table);
+    }
+
     private void loadHighScores() {
         String storedScores = prefs.getString("scores", "0,0,0");
         String[] split = storedScores.split(",");
@@ -105,20 +195,7 @@ public class RocketPocket extends Game {
             highScores[i] = Integer.parseInt(split[i]);
         }
     }
-    //save the given scores to the file for persistant storage
-    private void saveScoresToFile() {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < highScores.length; i++) {
-            sb.append(highScores[i]);
-            if (i < highScores.length - 1) {
-                sb.append(",");
-            }
-        }
-        prefs.putString("scores", sb.toString());
-        prefs.flush();
-    }
 
-    //add scores to leaderboard in correct order
     private void addScoreToLeaderboard(int newScore) {
         for (int i = 0; i < highScores.length; i++) {
             if (newScore > highScores[i]) {
@@ -132,156 +209,25 @@ public class RocketPocket extends Game {
         saveScoresToFile();
     }
 
-    @Override
-    public void render () {
-
-        batch.begin();
-        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        if (gameState == 1) {
-
-            if (debrisX[scoringTube] < (float)Gdx.graphics.getWidth() / 2) {
-
-                score++;
-
-                Gdx.app.log("Score", String.valueOf(score));
-
-                if (scoringTube < numberOfdebris - 1) {
-
-                    scoringTube++;
-
-                } else {
-
-                    scoringTube = 0;
-
-                }
-
-            }
-
-            if (Gdx.input.justTouched()) {
-
-                velocity = -30;
-
-            }
-
-            for (int i = 0; i < numberOfdebris; i++) {
-
-                if (debrisX[i] < - asteroids.getWidth()) {
-
-                    debrisX[i] += numberOfdebris * distanceBetweendebris;
-                    debrisOffset[i] = (randomGenerator.nextFloat() - 0.5f) * (Gdx.graphics.getHeight() - gap - 200);
-
-                } else {
-
-                    debrisX[i] = debrisX[i] - debrisVelocity;
-
-
-
-                }
-
-                batch.draw(asteroids, debrisX[i], (float)Gdx.graphics.getHeight() / 2 + gap / 2 + debrisOffset[i]);
-                batch.draw(satellites, debrisX[i], (float)Gdx.graphics.getHeight() / 2 - gap / 2 - satellites.getHeight() + debrisOffset[i]);
-
-                asteroidsRectangles[i] = new Rectangle(debrisX[i], (float)Gdx.graphics.getHeight() / 2 + gap / 2 + debrisOffset[i], asteroids.getWidth(), asteroids.getHeight());
-                satellitesRectangles[i] = new Rectangle(debrisX[i], (float)Gdx.graphics.getHeight() / 2 - gap / 2 - satellites.getHeight() + debrisOffset[i], satellites.getWidth(), satellites.getHeight());
-            }
-
-
-
-            if (rocketY > 0 && rocketY < 2500) {
-
-                velocity = velocity + gravity;
-                rocketY -= velocity;
-
-            } else {
-
-                gameState = 2;
-
-            }
-
-        } else if (gameState == 0) {
-
-            if (Gdx.input.justTouched()) {
-
-                gameState = 1;
-
-
-            }
-
-        } else if (gameState == 2) {
-
-            batch.draw(gameover, (float)Gdx.graphics.getWidth() / 2 - (float)gameover.getWidth() / 2, (float)Gdx.graphics.getHeight() / 2 - (float)gameover.getHeight() / 2);
-
-            addScoreToLeaderboard(score);
-
-//            if(score > highScore){
-//                highScore = score;
-//                prefs.putInteger("highScore", highScore);
-//                prefs.flush();
-//            }
-//
-//            font.draw(batch, "Score: " + score,
-//                (float)(Gdx.graphics.getWidth() / 2f - 400),
-//                (float)(Gdx.graphics.getHeight() / 2f - 100)
-//            );
-//
-//            font.draw(batch, "High Score: " + highScore,
-//                (float)(Gdx.graphics.getWidth() / 2f - 400),
-//                (float)(Gdx.graphics.getHeight() / 2f - 300)
-//            );
-            // WHY ISN'T THIS WORKING FML
-            /**if (Gdx.input.justTouched()) /// ////////
-            {
-                setScreen(new MainMenuScreen(RocketPocket.this)); // Switch to the main menu screen
-            }
-            **/
-
-            if (Gdx.input.justTouched()) {
-
-
-                gameState = 1;
-                startGame();
-                score = 0;
-                scoringTube = 0;
-                velocity = 0;
-
-
-            }
-
+    private void saveScoresToFile() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < highScores.length; i++) {
+            sb.append(highScores[i]);
+            if (i < highScores.length - 1) sb.append(",");
         }
-
-        if (flyState == 0) {
-            flyState = 1;
-        } else {
-            flyState = 0;
-        }
-
-
-
-        batch.draw(rockets[flyState], (float)Gdx.graphics.getWidth() / 2 - (float)rockets[flyState].getWidth() / 2, rocketY);
-
-        font.draw(batch, String.valueOf(score), 100, 200);
-
-        rocketCircle.set((float)Gdx.graphics.getWidth() / 2, rocketY + (float)rockets[flyState].getHeight() / 2, (float)rockets[flyState].getWidth() / 2);
-
-
-        for (int i = 0; i < numberOfdebris; i++) {
-
-
-            if (Intersector.overlaps(rocketCircle, asteroidsRectangles[i]) || Intersector.overlaps(rocketCircle, satellitesRectangles[i])) {
-
-                gameState = 2;
-
-                break;
-            }
-
-        }
-
-        batch.end();
-
-
-
+        prefs.putString("scores", sb.toString());
+        prefs.flush();
     }
 
-
+    public void dispose() {
+        batch.dispose();
+        background.dispose();
+        gameover.dispose();
+        backButton.dispose();
+        for (Texture t : rockets) t.dispose();
+        asteroids.dispose();
+        satellites.dispose();
+        font.dispose();
+        gameOverStage.dispose();
+    }
 }
