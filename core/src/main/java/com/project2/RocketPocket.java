@@ -2,6 +2,7 @@ package com.project2;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -13,10 +14,14 @@ import com.badlogic.gdx.math.Rectangle;
 import java.util.Random;
 
 
+
+
 public class RocketPocket extends Game {
     SpriteBatch batch;
     Texture background;
     Texture gameover;
+    Preferences prefs;
+    private int highScores[] = new int[3];  // initilizing highscore variable
 
     Texture[] rockets;
     int flyState = 0;
@@ -58,6 +63,9 @@ public class RocketPocket extends Game {
         font.setColor(Color.WHITE);
         font.getData().setScale(10);
 
+        prefs = Gdx.app.getPreferences("FlappyPreferences");
+        loadHighScores();
+
         rockets = new Texture[2];
         rockets[0] = new Texture("rocket-up.png");
         rockets[1] = new Texture("rocket-down.png");
@@ -95,6 +103,41 @@ public class RocketPocket extends Game {
 
         }
 
+    }
+
+    //load highscores data from file
+    private void loadHighScores() {
+        String storedScores = prefs.getString("scores", "0,0,0");
+        String[] split = storedScores.split(",");
+        for (int i = 0; i < split.length && i < highScores.length; i++) {
+            highScores[i] = Integer.parseInt(split[i]);
+        }
+    }
+    //save the given scores to the file for persistant storage
+    private void saveScoresToFile() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < highScores.length; i++) {
+            sb.append(highScores[i]);
+            if (i < highScores.length - 1) {
+                sb.append(",");
+            }
+        }
+        prefs.putString("scores", sb.toString());
+        prefs.flush();
+    }
+
+    //add scores to leaderboard in correct order
+    private void addScoreToLeaderboard(int newScore) {
+        for (int i = 0; i < highScores.length; i++) {
+            if (newScore > highScores[i]) {
+                for (int j = highScores.length - 1; j > i; j--) {
+                    highScores[j] = highScores[j - 1];
+                }
+                highScores[i] = newScore;
+                break;
+            }
+        }
+        saveScoresToFile();
     }
 
     @Override
@@ -177,7 +220,25 @@ public class RocketPocket extends Game {
 
             batch.draw(gameover, (float)Gdx.graphics.getWidth() / 2 - (float)gameover.getWidth() / 2, (float)Gdx.graphics.getHeight() / 2 - (float)gameover.getHeight() / 2);
 
+            addScoreToLeaderboard(score);
+
+//            if(score > highScore){
+//                highScore = score;
+//                prefs.putInteger("highScore", highScore);
+//                prefs.flush();
+//            }
+//
+//            font.draw(batch, "Score: " + score,
+//                (float)(Gdx.graphics.getWidth() / 2f - 400),
+//                (float)(Gdx.graphics.getHeight() / 2f - 100)
+//            );
+//
+//            font.draw(batch, "High Score: " + highScore,
+//                (float)(Gdx.graphics.getWidth() / 2f - 400),
+//                (float)(Gdx.graphics.getHeight() / 2f - 300)
+//            );
             if (Gdx.input.justTouched()) {
+
 
                 gameState = 1;
                 startGame();

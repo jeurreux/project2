@@ -46,6 +46,7 @@ public class MainMenuScreen implements Screen {
         stage.addActor(backgroundImage);
 
         // DO NOT TOUCH VALUES I SPENT 15 MINUTES ADJUUSTING THE VALUES TO MAKE IT PERFECT
+        // Nah - Haldon
         Image titleImage = new Image(titleTexture);
         rootTable.add(titleImage)
             .width(900)
@@ -54,6 +55,7 @@ public class MainMenuScreen implements Screen {
             .row();
 
         // DO NOT TOUCH TOO OR ELSE I WILL KMS LEAVE IT AS IS
+        //Im gonna adjust the forbidden properties - Haldon
         Image rocketImage = new Image(rocketTexture);
         rootTable.add(rocketImage)
             .width(135)
