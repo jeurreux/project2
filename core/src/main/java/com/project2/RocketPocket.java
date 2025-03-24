@@ -46,6 +46,7 @@ public class RocketPocket extends Game {
     Rectangle[] satellitesRectangles;
 
 
+
     @Override
     public void create () {
         setScreen(new MainMenuScreen(this)); // start with menu
@@ -228,6 +229,13 @@ public class RocketPocket extends Game {
 //                (float)(Gdx.graphics.getWidth() / 2f - 400),
 //                (float)(Gdx.graphics.getHeight() / 2f - 300)
 //            );
+            // WHY ISN'T THIS WORKING FML
+            /**if (Gdx.input.justTouched()) /// ////////
+            {
+                setScreen(new MainMenuScreen(RocketPocket.this)); // Switch to the main menu screen
+            }
+            **/
+
             if (Gdx.input.justTouched()) {
 
 
