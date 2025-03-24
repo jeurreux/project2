@@ -41,15 +41,15 @@ public class MainMenuScreen implements Screen {
         bgImage.setFillParent(true);
         stage.addActor(bgImage);
 
-        // Title
+        // DO NOT TOUCH THE VALUES IT WILL AFFECT THE MOTHER FUCKING ROCKET >:(
         table.add(new Image(title)).width(900).height(300).padBottom(0).row();
 
-        // Rocket
+        // DO NOT TOUCH VALUES I SPENT 15 MINUTES TO LINE IT UP PERFECTLY I WILL KMS IF YOU 2 BREAK IT
         table.add(new Image(rocket))
             .width(135).height(100)
             .padTop(565).padBottom(320).row();
 
-        // Play Button
+        // DO NOT TOUC THE SHIT ISTG FUCK HTHIS SHIT
         Image playBtn = new Image(playButton);
         playBtn.addListener(new ClickListener() {
             @Override
@@ -59,7 +59,6 @@ public class MainMenuScreen implements Screen {
         });
         table.add(playBtn).width(375).height(275).padTop(50).row();
 
-        // Leaderboard Button
         Image leaderboardBtn = new Image(leaderboardButton);
         leaderboardBtn.addListener(new ClickListener() {
             @Override
@@ -89,7 +88,7 @@ public class MainMenuScreen implements Screen {
         rocket.dispose();
     }
 
-    // Other required Screen methods...
+
     @Override public void resize(int width, int height) { stage.getViewport().update(width, height, true); }
     @Override public void pause() {}
     @Override public void resume() {}
