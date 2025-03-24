@@ -35,7 +35,6 @@ public class LeaderboardScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        // Load images
         backgroundTexture = new Texture("background.png");
         Texture leaderboardTitleTexture;
         leaderboardTitleTexture = new Texture(Gdx.files.internal("leaderboards.png"));
@@ -43,6 +42,7 @@ public class LeaderboardScreen implements Screen {
 
         Table table = new Table();
         table.setFillParent(true);
+        table.center();
 
         Image backgroundImage = new Image(backgroundTexture);
         backgroundImage.setFillParent(true);
@@ -51,30 +51,48 @@ public class LeaderboardScreen implements Screen {
 
         // leaderboard title
         Image leaderboardTitle = new Image(leaderboardTitleTexture);
-        table.add(leaderboardTitle).padBottom(50).row();
+        table.add(leaderboardTitle)
+            .padBottom(50)
+            .width(900)
+            .height(300)
+            .padBottom(0)
+            .row();
+
+        /**
+         BitmapFont font = new BitmapFont();
+         font.getData().setScale(10f);           oh my days does this even do anything smh
+         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+         **/
 
         // dummy high scores until player comes through
         List<String> scores = new ArrayList<>();
-        scores.add("1. Player1 - 5000");
-        scores.add("2. Player2 - 4000");
-        scores.add("3. Player3 - 3000");
-        scores.add("4. Player4 - 2000");
-        scores.add("5. Player5 - 1000");
+        scores.add("1. Player1 - 50");
+        scores.add("2. Player2 - 40");
+        scores.add("3. Player3 - 30");
+        scores.add("4. Player4 - 20");
+        scores.add("5. Player5 - 10");
 
         for (String score : scores) {
             Label scoreLabel = new Label(score, new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+            scoreLabel.setFontScale(5f); // bruh
             table.add(scoreLabel).padBottom(10).row();
         }
 
         // back or quit button
         Image backButton = new Image(backButtonTexture);
+        backButton.setSize(200, 200);
+
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new MainMenuScreen(game));
             }
         });
-        table.add(backButton).padTop(20);
+        table.add(backButton)
+            .padTop(20)
+            .width(200)
+            .height(200)
+            .center();
     }
 
     @Override
@@ -108,4 +126,3 @@ public class LeaderboardScreen implements Screen {
         backButtonTexture.dispose();
     }
 }
-
