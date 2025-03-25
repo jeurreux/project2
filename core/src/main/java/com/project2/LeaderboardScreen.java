@@ -24,10 +24,12 @@ public class LeaderboardScreen implements Screen {
     private BitmapFont font;
     private int[] highScores;
 
+    //Loads the highscores from the saved array and splits them to be displayed
+    //properly for the user to see
     public LeaderboardScreen(Game game) {
         this.game = game;
         Preferences prefs = Gdx.app.getPreferences("RocketPocketPrefs");
-        String scores = prefs.getString("scores", "0,0,0");
+        String scores = prefs.getString("scores", "0,0,0"); //sets default highscore vales to be beat by the user
         highScores = Arrays.stream(scores.split(","))
             .mapToInt(Integer::parseInt)
             .toArray();

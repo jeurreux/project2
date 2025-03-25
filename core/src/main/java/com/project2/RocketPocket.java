@@ -23,7 +23,7 @@ public class RocketPocket {
     private SpriteBatch batch;
     private Texture background, gameover, backButton;
     private Preferences prefs;
-    private int[] highScores = new int[3];
+    private int[] highScores = new int[3];  //array to store users highscores for the leaderboards
     private Texture[] rockets;
     private int flyState = 0;
     private float rocketY = 0;
@@ -33,9 +33,9 @@ public class RocketPocket {
     private int scoringTube = 0;
     private BitmapFont font;
     private int gameState = 0;
-    private double gravity = 1.5;
+    private double gravity = 1.5;  //effects the falling speed of the spacecraft
     private Texture asteroids, satellites;
-    private float gap = 700;
+    private float gap = 700;  //Chosen to make the game playable yet difficult
     private float maxDebrisOffset;
     private Random random;
     private float debrisVelocity = 4;
@@ -92,8 +92,7 @@ public class RocketPocket {
         batch.begin();
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        if (gameState == 1) { // Game running
-            // Game logic...
+        if (gameState == 1) { // Game running (hopefully)
             if (debrisX[scoringTube] < Gdx.graphics.getWidth()/2) {
                 score++;
                 if (scoringTube < numberOfDebris - 1) {
@@ -128,14 +127,14 @@ public class RocketPocket {
                 velocity += gravity;
                 rocketY -= velocity;
             } else {
-                gameState = 2; // Game over
+                gameState = 2; // Game over womp womp
             }
 
         } else if (gameState == 0) { // Ready screen
             if (Gdx.input.justTouched()) {
                 gameState = 1;
             }
-        } else if (gameState == 2) { // Game over
+        } else if (gameState == 2) { // Game over womp womp
             batch.draw(gameover, Gdx.graphics.getWidth()/2 - gameover.getWidth()/2,
                 Gdx.graphics.getHeight()/2 - gameover.getHeight()/2);
             batch.end();
@@ -188,6 +187,8 @@ public class RocketPocket {
         gameOverStage.addActor(table);
     }
 
+    //Loads the highscores so they can be checked with the current score
+    //and if needed be added in using the next funcitons.
     private void loadHighScores() {
         String storedScores = prefs.getString("scores", "0,0,0");
         String[] split = storedScores.split(",");
@@ -196,6 +197,8 @@ public class RocketPocket {
         }
     }
 
+    //This function checks where in the leaderboard a score needs to be added
+    //Also relocates scores to the correct locations after a new one is added
     private void addScoreToLeaderboard(int newScore) {
         for (int i = 0; i < highScores.length; i++) {
             if (newScore > highScores[i]) {
@@ -209,6 +212,8 @@ public class RocketPocket {
         saveScoresToFile();
     }
 
+    //This function is used to save the highscores so they will be persistant
+    //after the app is closed
     private void saveScoresToFile() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < highScores.length; i++) {
